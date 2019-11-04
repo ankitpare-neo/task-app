@@ -44,6 +44,12 @@ app.post('/tasks',(req,res)=>{
     })
 })
 
+app.get('/tasks',(req,res)=>{
+    Task.find().then((data)=>{res.send(data)}).catch((err)=>{
+        res.send(err)
+    })
+})
+
  
 
 app.listen(port, ()=>{
