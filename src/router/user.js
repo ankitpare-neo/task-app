@@ -2,17 +2,22 @@ const User = require('../models/user')
 const express = require('express')
 const router = new express.Router()
 
-router.post('/users', async (req,res)=>{
+router.post('/users', (req,res)=>{
     const user  = new User(req.body)
-   
+    console.log(user);
    // Using Async Await
-    try{
-    await user.save()
-    res.send(user)
-    }
-    catch(e){
-        res.send(e)
-    }
+    user.save((err, result)=>{
+        if(!err && result){
+            res.send(result);
+        }else{
+        res.send(err);
+        }
+    })
+    // res.send(user)
+    // }
+    // catch(e){
+    //     res.send(e)
+    // }
      // Without Callback
     // const user  = new User(req.body)
     // user.save().then(() => {
@@ -38,6 +43,7 @@ router.get('/users/:id', async (req,res)=>{
     const id  = req.params.id
     try{
        const data = await User.findById(id)
+       
        res.send(data)
     }
     catch(e)
@@ -69,7 +75,7 @@ router.patch('/users/:id', async (req, res)=>{
         res.send(e)
     }
 
-})
+})   
 
 router.delete('/users/:id', async (req,res)=>{
     const id = req.params.id
@@ -80,6 +86,20 @@ router.delete('/users/:id', async (req,res)=>{
     }
     catch(e){
         res.send(e) 
+    }
+})
+
+
+
+// Using MOngoose Schema
+
+router.post('/users/login', async (req,res)=>{
+    try{
+            const user = await User.findByCredentials(req.body.email, req.body.password)
+            res.send(user)
+    }
+    catch(e){
+          res.send(e)
     }
 })
 
